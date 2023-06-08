@@ -760,33 +760,19 @@ BlockLocation * hdfsGetFileBlockLocations(hdfsFS fs, const char * path,
 void hdfsFreeFileBlockLocations(BlockLocation * locations, int numOfBlock);
 
 /**
- * Create encryption zone for the directory with specific key name
- * @param fs The configured filesystem handle.
- * @param path The path of the directory.
- * @param keyname The key name of the encryption zone 
- * @return Returns 0 on success, -1 on error.
+ * Set the default username to use when connecting to the HDFS cluster.
+ *
+ * @param userName The user name.  The string will be shallow-copied.
  */
-int hdfsCreateEncryptionZone(hdfsFS fs, const char * path, const char * keyName);
+void hdfsSetDefautUserName(const char *userName);
 
 /**
- * hdfsEncryptionZoneInfo - Get information about a path as a (dynamically
- * allocated) single hdfsEncryptionZoneInfo struct. hdfsEncryptionZoneInfo should be
- * called when the pointer is no longer needed.
- * @param fs The configured filesystem handle.
- * @param path The path of the encryption zone.
- * @return Returns a dynamically-allocated hdfsEncryptionZoneInfo object;
- * NULL on error.
+ * Set the token used to authenticate for default user
+ *
+ * @param token The token used to authenticate
+ * @return 0 on success; nonzero error code otherwise.
  */
-hdfsEncryptionZoneInfo * hdfsGetEZForPath(hdfsFS fs, const char * path);
-
-/**
- * hdfsEncryptionZoneInfo -  Get list of all the encryption zones.
- * hdfsFreeEncryptionZoneInfo should be called to deallocate memory.
- * @param fs The configured filesystem handle.
- * @return Returns a dynamically-allocated array of hdfsEncryptionZoneInfo objects;
- * NULL on error.
- */
-hdfsEncryptionZoneInfo * hdfsListEncryptionZones(hdfsFS fs, int * numEntries);
+int hdfsSetTokenForDefaultUser(const char *token);
 
 #ifdef __cplusplus
 }

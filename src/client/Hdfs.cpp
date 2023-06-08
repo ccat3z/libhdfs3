@@ -34,6 +34,8 @@
 #include "SessionConfig.h"
 #include "Thread.h"
 #include "XmlConfig.h"
+#include "client/Token.h"
+#include "client/UserInfo.h"
 
 #include <vector>
 #include <string>
@@ -1560,6 +1562,33 @@ hdfsEncryptionZoneInfo * hdfsListEncryptionZones(hdfsFS fs, int * numEntries) {
     }
     return NULL;
 }
+
+void hdfsSetDefautUserName(const char *userName) {
+    using namespace Hdfs::Internal;
+    assert(userName && strlen(userName) > 0);
+    // TODO: Clear the tokens of old user
+    UserInfo::DefaultUser().setEffectiveUser(userName);
+}
+
+int hdfsSetTokenForDefaultUser(const char *token) {
+    using namespace Hdfs::Internal;
+    assert(token && strlen(token) > 0);
+
+    try {
+        Token tk;
+        tk.fromString(token);
+        UserInfo::DefaultUser().addToken(tk);
+        return 0;
+    } catch (const std::bad_alloc &e) {
+        errno = ENOMEM;
+    } catch (...) {
+        SetLastException(Hdfs::current_exception());
+        handleException(Hdfs::current_exception());
+    }
+
+    return -1;
+}
+
 #ifdef __cplusplus
 }
 #endif

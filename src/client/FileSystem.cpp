@@ -32,6 +32,7 @@
 #include "Token.h"
 #include "Unordered.h"
 #include "WritableUtils.h"
+#include "client/UserInfo.h"
 
 #include <algorithm>
 #include <string>
@@ -234,7 +235,11 @@ void FileSystem::connect(const char * uri, const char * username, const char * t
         }
 
         if (auth == AuthMethod::KERBEROS) {
-            principal = ExtractPrincipalFromTicketCache(sconf.getKerberosCachePath());
+            if (principal.empty())
+                principal = UserInfo::DefaultUser().getPrincipal();
+            else
+                principal = ExtractPrincipalFromTicketCache(
+                    sconf.getKerberosCachePath());
         }
 
         impl = ConnectInternal(uri, principal, NULL, conf);
